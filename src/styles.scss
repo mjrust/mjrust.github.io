@@ -1,0 +1,118 @@
+$ocean-40: #e3ebfc;
+$mint: #19cca3;
+$mint-120: #139879;
+$mint-80: #1bddb1;
+$mint-60: #6ae6c9;
+$mint-40: #b6f2e4;
+$mint-20: #ebfffa;
+$slate: #4e5468;
+$slate-120: #1f2129;
+$slate-80: #5f667e;
+$slate-60: #9298ad;
+$slate-40: #ced3e0;
+$slate-30: #edf0f7;
+$slate-20: #f7f9ff;
+
+p {
+  margin-top: 10px;
+}
+
+.wrapper {
+  height: 100vh;
+  width: 100%;
+}
+
+.main {
+  width: 25%;
+}
+
+.progress-bar, .progress-bar-fill {
+  height: 1em;
+  width: 100%;
+  background-color: $mint-40;
+  border: 1px solid $mint-40;
+  .progress-bar-fill {
+    height: calc(1em - 2px);
+    border: none;
+    background-color: $mint;
+  }
+}
+
+.donation-count-banner {
+  position: relative;
+  margin-bottom: 1.5em;
+  padding: 0.5em;
+  border-bottom: 1px solid $ocean-40;
+  background: $ocean-40;
+  &:before, &:after {
+    content: "";
+    position: absolute;
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-color: transparent;
+    border-bottom: 0;
+  }
+  &:before {
+    bottom: -16px;
+    right: 15px;
+    border-top-color: $ocean-40;
+    border-width: 16px;
+  }
+  &:after {
+    bottom: -15px;
+    right: 16px;
+    border-top-color: $ocean-40;
+    border-width: 15px;
+  }
+}
+
+.scarcity {
+  font-size: 1.5em;
+  font-weight: bold;
+}
+
+#donation-form {
+  .prefix {
+    color: $slate-60;
+    position: relative;
+    top: 15px;
+    left: 15px;
+    z-index: 10000;
+  }
+  input, button {
+    border: 0;
+    &:focus {
+      outline: none;
+    }
+  }
+  input[type=text] {
+    position: relative;
+    left: -10px;
+    min-width: 185px;
+    width: 55%;
+    font-size: 1.5em;
+    height: 2em;
+    font-weight: bold;
+    border: 1px solid $slate-60;
+    border-radius: 0.25em 0 0 0.25em;
+    border-right: none;
+    padding: 15px 5px 15px 30px;
+  }
+  button {
+    position: relative;
+    left: -10px;
+    min-width: 135px;
+    width: 40%;
+    font-size: 1.5em;
+    height: 2em;
+    font-weight: 600;
+    border: 1px solid $mint;
+    border-radius: 0 0.25em 0.25em 0;
+    border-left: none;
+    color: #fff;
+    &:hover {
+      cursor: pointer;
+    }
+  }
+}
