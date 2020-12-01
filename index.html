@@ -94,8 +94,12 @@
         if (currentDonationAmount === NaN) {
           return;
         }
-        if (!Number.isInteger(currentDonationAmount) || currentDonationAmount < 1) {
+        if (!Number.isInteger(currentDonationAmount)) {
           this.setState({ error: true, errorMsg: "Please enter a whole dollar amount!" });
+          return;
+        }
+        if (currentDonationAmount < 5) {
+          this.setState({ error: true, errorMsg: "Please give a $5 minimum" });
           return;
         }
         this.updateTotal();
