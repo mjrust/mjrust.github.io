@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Give Now</title>
+  <link rel="stylesheet" href="https://unpkg.com/camp-css@latest/css/camp.min.css">
+  <link rel="stylesheet" href="build/styles.css" />
+</head>
+
+<body>
+  <!-- React Container -->
+  <div id="container"></div>
+
+  <!-- Load React. -->
+  <script src="https://unpkg.com/react@17/umd/react.development.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js" crossorigin></script>
+  <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+  <!-- Load our React component. -->
+  <script type="text/babel">
+    class App extends React.Component {
+      constructor(props) {
+        super(props);
+        const GOAL = parseInt(this.props.goal);
+        const DEADLINE = this.props.deadline;
+        this.state = {
+          donationTotal: 0,
+          donorCount: 0,
+          currentDonationAmount: "",
+          daysLeftInCampaign: 0,
+          amountToGoal: 5000,
+          goal: GOAL,
+          deadline: DEADLINE,
+          completionPercentage: "0%",
+          error: false,
+          errorMsg: ""
+        }
+
+        this.handleChange = this.handleChange.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
+        this.updateTotal = this.updateTotal.bind(this);
+        this.updateDonors = this.updateDonors.bind(this);
+        this.handleEnter = this.handleEnter.bind(this);
+      }
+
+      formatCurrency(num) {
+        return Number(num).toLocaleString('en');
+      }
+
+      componentDidMount () {
+        const now = new Date();
+        const deadline = this.state.deadline;
+        const daysLeftInCampaign = Math.floor((deadline -  now)/(1000*60*60*24));
+        this.setState({ daysLeftInCampaign });
+      }
+
+      updateTotal () {
+        const runningTotal = parseInt(this.state.donationTotal);
+        const currentAmount = parseInt(this.state.currentDonationAmount);
+        const donationTotal = runningTotal + currentAmount;
+        let amountToGoal = this.state.amountToGoal - currentAmount;
+
+        // No negatives
+        if (amountToGoal < 0) {
+          amountToGoal = 0;
+        }
+
+        this.setState({ donationTotal, amountToGoal }, () => {
+          // Update Progess Bar after setting the donationTotal
+          const runningTotal = this.state.donationTotal;
+          const goal = this.state.goal;
+          let calculatedProgress = (runningTotal / goal) * 100;
+          if (calculatedProgress > 100) {
+            calculatedProgress = 100;
+          }
+          this.setState({ completionPercentage: `${calculatedProgress}%`, currentDonationAmount: "" });
+        });
+      }
+
+      updateDonors () {
+        const donorCount = this.state.donorCount + 1;
+        this.setState({ donorCount });
+      }
+
+      handleChange (e) {
+        e.preventDefault();
+        this.setState({ currentDonationAmount: e.target.value, error: false });
+      }
+
+      handleSubmit (e) {
+        e.preventDefault();
+        const currentDonationAmount = parseInt(this.state.currentDonationAmount);
+        console.log(currentDonationAmount);
+        if (currentDonationAmount === NaN) {
+          return;
+        }
+        if (!Number.isInteger(currentDonationAmount) || currentDonationAmount < 1) {
+          this.setState({ error: true, errorMsg: "Please enter a whole dollar amount!" });
+          return;
+        }
+        this.updateTotal();
+        this.updateDonors();
+      }
+
+      handleEnter(e) {
+        if (e.key === 'Enter') {
+          this.handleSubmit(e);
+        }
+      }
+
+      render () {
+        return (
+          <div className="wrapper flex jc-center ai-center bg-ocean-20">
+            <section className="main body flex-column">
+              <header className="donation-count-banner title bg-ocean-40 ocean-120 br-1">
+                <span className="fw-700"><sup>$</sup>{this.formatCurrency(this.state.amountToGoal)}</span> still needed to fund this project
+              </header>
+              <section className="bg-white br-top-1 br-bottom-1 bs-soft">
+                <div className="progress-bar br-top-1">
+                  <div className="progress-bar-fill br-top-1" style={{ width: this.state.completionPercentage }}></div>
+                </div>
+                <div id="donation-form" className="p-8">
+                  <p className="title scarcity">Only {this.state.daysLeftInCampaign} days left to fund this project</p>
+                  <p className="cta">Join the <span className="fw-700">{this.state.donorCount}</span> other donors who have already supported this project.</p>
+                  <div className="flex jc-stretch">
+                    <span className="prefix">$</span>
+                    <label className="none" htmlFor="donation-amount">Enter Donation Amount</label>
+                    <input className="flex-grow-1" name="donation-amount" type="text" onChange={this.handleChange} onKeyDown={this.handleEnter} value={this.state.currentDonationAmount} />
+                    <button className="flex-grow-1 bg-mint" onClick={this.handleSubmit} title="Submit Donation">Give Now</button>
+                  </div>
+                  {this.state.error ? (<div className="flex jc-stretch py-3 strawberry">{this.state.errorMsg}</div>) : null}
+                </div>
+              </section>
+            </section>
+          </div>
+        );
+      }
+    }
+
+    let domContainer = document.querySelector('#container');
+    // Making the deadline aribitrarily 12/25/2020
+    const deadline = new Date("2020-12-25");
+    ReactDOM.render(<App goal="5000" deadline={deadline} />, domContainer);
+  </script>
+</body>
+
+</html>
